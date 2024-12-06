@@ -1,3 +1,6 @@
 resource/
 reports/
 __pycache__/
+y
+*.log
+*.html
