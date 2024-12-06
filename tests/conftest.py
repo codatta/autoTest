@@ -1,12 +1,17 @@
+import logging
 import pytest
+
 from config.configBase import Config
 from utils.configBase import init
 
+
+
 @pytest.fixture(scope='session', autouse=True)
 def setup_driver():
-
     driver = None
     try:
+        logger = logging.getLogger()
+        logger.info(".........夹具开始执行.........")
         driver = init()
         yield driver
     except Exception as e:

@@ -11,7 +11,7 @@ def run_tests():
 
 if __name__ == "__main__":
     logger=setup_logging()
-    logger.info("这是一轮整体用例测试的开始")
+    logger.info(".........这是一轮整体用例测试的开始.........")
     while True:
         exit_code = run_tests()  # 运行测试并获取退出代码
         time.sleep(1)

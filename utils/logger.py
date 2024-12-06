@@ -55,11 +55,11 @@ def log_execution(func):
     def wrapper(*args, **kwargs):
         logger = logging.getLogger()
         try:
-            logger.info(f"..........................开始执行函数: {func.__name__}..........................")
+            logger.info(f"............开始执行函数: {func.__name__}，参数: {args}, 关键字参数: {kwargs}............")
             result = func(*args, **kwargs)
-            logger.info(f"..........................完成执行函数: {func.__name__}..........................")
+            logger.info(f"............完成执行函数: {func.__name__},返回: {result}............")
             return result
         except Exception as e:
-            logger.error(f"..........................执行函数时发生错误..........................")
+            logger.error(f"............执行函数时发生错误............")
             raise  # 重新抛出异常
     return wrapper
