@@ -21,7 +21,8 @@
 ## 安装
 
 请确保您已安装 Python 3.x 和 pip。然后，您可以通过以下命令安装项目依赖：
-pip install -r requirements.txt
+
+**pip install -r requirements.txt**
 
 ## 使用
 
