@@ -1,16 +1,16 @@
 import os
 
 class Config:
-    IMPLICIT_WAIT_TIME = 10
+    IMPLICIT_WAIT_TIME = 20
     PAGE_LOAD_TIMEOUT = 30
     SCREENPATH = os.path.expanduser("resource/screenshot")
+    LOGS=os.path.expanduser("resource/logs")
     # 测试token
     TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMzkwNjI2NTM0MTA5MTg0IiwiY29ubmVjdG9yIjoid2FsbGV0IiwiYWNjb3VudF90eXBlIjoid2FsbGV0IiwiYWNjb3VudCI6IjB4YjQ3Zjc1YjFlYWFiOWE3MzJiNWZjNmQ5NjQ5ZGJkZjM2ZWY0ZDZjOCIsImxvZ2luX3NvdXJjZSI6ImNvZGF0dGEiLCJsb2dpbl93YWxsZXRfc291cmNlIjoiT0tYIFdhbGxldCJ9.ebqc0FlL8uROrCba6id3lENdR2JnWUUFVeecKfFdmKk'
-    COOKIE_STRING = '_ga=GA1.1.1344376451.1732246450; forterToken=32d5f233d1c648c98652263294a1bcd8_1733381246209_2958_UDF43-m4_21ck_; _ga_K8V0FL9E1N=GS1.1.1733380396.28.1.1733381281.0.0.0'
+    COOKIE_STRING = '_ga=GA1.1.1344376451.1732246450; forterToken=32d5f233d1c648c98652263294a1bcd8_1733453382847_2958_UDF43-m4_21ck_; _ga_K8V0FL9E1N=GS1.1.1733453380.31.1.1733453475.0.0.0'
     COOKIES = dict(item.split('=', 1) for item in COOKIE_STRING.split('; '))
     UID = '390626534109184'
     DOMAIN = 'app.codatta.io'
-    LOG_LEVEL = 'DEBUG'  # 日志记录级别
     REPORT_PATH = os.path.join(os.getcwd(), 'reports', 'test_report.html')  # 测试报告路径
     CHROME_OPTIONS_ADD_ARGUMENT = True  # 启用无痕模式
     CHROME_OPTIONS_ADD_ARGUMENT_HEAD = False  # 设置为 False 以启用可视化模式

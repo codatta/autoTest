@@ -56,7 +56,6 @@ def init():
     driver.get( 'https://'+ Config.DOMAIN ) # type: ignore
     # 设置 Cookies
     for name, value in Config.COOKIES.items():
-        print(name,value)
         driver.add_cookie({'name': name, 'value': value, 'domain': Config.DOMAIN})
     # 设置 Local Storage 数据
     local_storage_data = {
@@ -102,9 +101,7 @@ def init():
     # 设置请求头
     set_custom_headers(driver, Config.TOKEN, Config.UID, Config.DOMAIN)
     # 刷新页面以应用 Cookies 和 Local Storage 数据
+    time.sleep(2)
     driver.refresh()
-    time.sleep(1)
-    # 访问网页
-    driver.get('https://' + Config.DOMAIN+'/app/submission/submit?category=personal-data' )
-    time.sleep(5)
+    time.sleep(7)
     return driver

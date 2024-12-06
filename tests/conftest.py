@@ -4,6 +4,7 @@ from utils.configBase import init
 
 @pytest.fixture(scope='session', autouse=True)
 def setup_driver():
+
     driver = None
     try:
         driver = init()
