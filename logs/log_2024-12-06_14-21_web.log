@@ -1,4 +1,0 @@
-2024-12-06 14:21:30,662 - INFO - ====== WebDriver manager ======
-2024-12-06 14:21:30,912 - INFO - Get LATEST chromedriver version for google-chrome
-2024-12-06 14:21:32,421 - INFO - Get LATEST chromedriver version for google-chrome
-2024-12-06 14:21:36,318 - INFO - Driver [/Users/mac/.wdm/drivers/chromedriver/mac64/131.0.6778.87/chromedriver-mac-arm64/chromedriver] found in cache
