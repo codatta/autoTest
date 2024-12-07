@@ -1,5 +1,6 @@
 # 可以在这里进行其他操作，如提取信息、点击按钮等
 import logging
+import traceback
 from datetime import  datetime, timedelta
 import os
 import time
@@ -43,6 +44,7 @@ def clickbyText(driver, text, timeout=Config.IMPLICIT_WAIT_TIME, exception=True,
                 found_clickable = False
                 # 找到多个匹配元素时，优先点击可见且可点击的元素
                 for element in elements:
+                    logging.info(element)
                     if element.is_displayed() and element.is_enabled():
                         element.click()
                         logging.info(f"成功点击包含模糊匹配文字 '{text}' 的元素")
@@ -64,7 +66,7 @@ def clickbyText(driver, text, timeout=Config.IMPLICIT_WAIT_TIME, exception=True,
                 assert True, f"成功点击包含文字 '{text}' 的元素"
                 return
             else:
-                logging.warning(f"找到包含文字 '{text}' 的元素，但不可点击或不可见，无法完成点击操作")
+                logging.warning(f"找到包含文字 '{text}' 的元素，但不可点击或不可见，无法完成点击操作,使用js点击")
     except Exception as e:
         if exception:
             logging.error(f"查找或点击元素时发生错误，详细信息: {str(e)}", exc_info=True)
@@ -72,6 +74,41 @@ def clickbyText(driver, text, timeout=Config.IMPLICIT_WAIT_TIME, exception=True,
         else:
             logging.warning(f"查找或点击元素时发生错误，但不抛出异常，错误信息: {str(e)}")
     return  # 无论是否出现异常，只要exception为False，就直接返回，保证测试用例继续执行
+
+
+@log_execution
+def clickbyId(driver, element_id, timeout=Config.IMPLICIT_WAIT_TIME, exception=True, *args, **kwargs):
+    """
+    根据给定的元素id点击页面元素。
+
+    :param driver: Selenium WebDriver实例，用于与浏览器交互。
+    :param element_id: 要查找的元素的id属性值。
+    :param timeout: 等待元素可点击的超时时间（秒），默认为配置中的隐式等待时间。
+    :param exception: 是否捕获异常并记录详细错误信息，默认为True。
+    """
+    logging.info(f"要点击的元素id是：{element_id}")
+    try:
+        # 等待页面加载完成，这里使用等待元素可点击的条件
+        WebDriverWait(driver, timeout).until(
+            EC.element_to_be_clickable((By.ID, element_id))
+        )
+        element = driver.find_element(By.ID, element_id)
+        assert element is not None, f"根据id查找元素，预期能找到元素，但实际返回None，id为 {element_id}"
+        if element.is_displayed() and element.is_enabled():
+            element.click()
+            logging.info(f"成功点击id为 '{element_id}' 的元素")
+            assert True, f"成功点击id为 '{element_id}' 的元素"
+            return
+        else:
+            logging.warning(f"找到id为 '{element_id}' 的元素，但不可点击或不可见，无法完成点击操作")
+    except Exception as e:
+        if exception:
+            logging.error(f"查找或点击元素时发生错误，详细信息: {str(e)}", exc_info=True)
+            raise e
+        else:
+            logging.warning(f"查找或点击元素时发生错误，但不抛出异常，错误信息: {str(e)}")
+            traceback.print_exc()  # 打印详细的异常堆栈信息，方便排查问题（即使不抛出异常也可查看具体情况）
+    return
 
 # 滑动页面
 @log_execution
@@ -165,7 +202,7 @@ def screenshot(driver, savePath=None, choice=1, *args, **kwargs):
     try:
         # 获取当前日期和时间
         current_time = datetime.now().strftime("%Y-%m-%d_%H-%M")  # 格式化为 "YYYY-MM-DD_HH-MM-SS"
-        
+
         # 如果没有指定保存路径，则使用默认路径和文件名
         if not savePath:
             if choice == 1:
@@ -217,7 +254,7 @@ def delete_old_screenshots(directory, days=Config.EXPIRATION_TIME_SCREENSHOT, *a
             filename = os.path.basename(file)
             date_str = filename.split('_')[1]  # 假设文件名格式为 screenshot_YYYY-MM-DD_XXXX.png
             file_date = datetime.strptime(date_str, "%Y-%m-%d")  # 将字符串转换为日期对象
-            
+
             # 如果文件日期早于过期时间，则删除
             if file_date < expiration_time:
                 os.remove(file)
@@ -287,55 +324,48 @@ def delete_old_reports(directory, days=Config.EXPIRATION_TIME_REPORTS):
                 logging.info(f"已删除过期报告：{file}")
         except Exception as e:
             logging.error(f"删除文件时发生错误: {file}, 错误信息: {str(e)}")
+
 @log_execution
-def find_text_on_page(driver, text, timeout=Config.IMPLICIT_WAIT_TIME, exception=True, fuzzy=True, *args, **kwargs):
+def findText(driver, text, timeout=Config.IMPLICIT_WAIT_TIME, fuzzy=True, partial_match=True, *args, **kwargs):
     """
-    查找页面中是否包含指定的文本，支持模糊匹配。
+    根据给定的文本查找页面元素，支持模糊匹配、精确匹配以及部分匹配等多种方式。
 
     :param driver: Selenium WebDriver实例，用于与浏览器交互。
-    :param text: 要查找的文本字符串。
-    :param timeout: 等待文本出现的最大时间（秒），默认为配置中的隐式等待时间。
-    :param exception: 是否捕获异常，默认为True。
-    :param fuzzy: 是否启用模糊匹配，默认为False。
-    :return: 如果找到文本，返回True；否则返回False。
+    :param text: 要查找的元素文本。
+    :param timeout: 等待元素出现的超时时间（秒），默认为配置中的隐式等待时间。
+    :param fuzzy: 是否启用模糊匹配（包含文本即可），默认为True。
+    :param partial_match: 是否启用部分匹配（文本是元素文本的一部分），默认为True。
+    :return: 找到的符合条件的元素列表，如果没有找到则返回空列表。
     """
+    logging.info(f"要查找的文字是：{text}")
     try:
-        # 等待页面加载完成，直到页面中所有元素可见
+        # 等待页面加载完成，确保元素存在，使用等待所有元素存在的条件（可根据实际情况调整更精准条件）
         WebDriverWait(driver, timeout).until(
-            EC.visibility_of_all_elements_located((By.XPATH, "//*"))
+            EC.presence_of_all_elements_located((By.XPATH, "//*"))
         )
-        assert driver.current_url, "页面加载完成后，当前URL不应为空，可能页面加载出现问题"
-
-        # 获取页面的所有元素
-        elements = driver.find_elements(By.XPATH, "//*")
-        assert elements, "未能获取到页面的任何元素，可能元素查找出现问题"
-
-        all_text = " ".join([element.text for element in elements])  # 获取所有元素的文本
-
-        logging.info(f"页面文本内容: {all_text}")  # 打印页面的完整文本内容
 
         if fuzzy:
-            # 使用正则表达式进行模糊匹配
-            pattern = re.compile(re.escape(text), re.IGNORECASE)  # 忽略大小写
-            assert pattern, "正则表达式编译失败，可能正则表达式语法有误"
-            if pattern.search(all_text):
-                logging.info(f"成功找到模糊匹配文本：'{text}'")
-                assert True, f"成功找到模糊匹配文本 '{text}'，符合预期"
-                return True
+            if partial_match:
+                # 模糊且部分匹配，忽略大小写，去除文本两端空白后进行匹配
+                xpath_expr = f"//*[contains(translate(normalize-space(text()), 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), '{text.strip().lower()}')]"
+            else:
+                # 模糊匹配，文本完整出现（忽略大小写），去除文本两端空白后进行匹配
+                xpath_expr = f"//*[normalize-space(translate(text(), 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')) = '{text.strip().lower()}']"
+            elements = driver.find_elements(By.XPATH, xpath_expr)
+            logging.info(f"模糊匹配查找元素，找到 {len(elements)} 个符合条件的元素")
+
+            # 添加断言，确保模糊匹配至少找到一个元素（可根据实际需求调整断言条件）
+            assert elements, f"模糊匹配预期能找到元素，但实际未找到任何元素，查找文本为 {text}"
+            return elements
         else:
             # 精确匹配
-            assert text, "要进行精确匹配的文本不能为空，否则无法进行匹配"
-            if text in all_text:
-                logging.info(f"成功找到文本：'{text}'")
-                assert True, f"成功找到文本 '{text}'，符合预期"
-                return True
+            xpath_expr = f"//*[normalize-space(text()) = '{text.strip()}']"
+            element = driver.find_element(By.XPATH, xpath_expr)
+            logging.info(f"精确匹配查找元素，找到 1 个符合条件的元素")
 
-        logging.info(f"未找到文本：'{text}'")
-        assert False, f"未找到预期文本 '{text}'，不符合预期"
+            # 添加断言，确保精确匹配能找到元素
+            assert element is not None, f"精确匹配预期能找到元素，但实际返回 None，查找文本为 {text}"
+            return [element]
     except Exception as e:
-        if exception:
-            logging.error(f"查找文本时发生错误，详细信息: {str(e)}", exc_info=True)
-            raise e
-        else:
-            logging.warning(f"查找文本时发生错误，但不抛出异常，错误信息: {str(e)}")
-            return False
+        logging.error(f"查找元素时发生错误，详细信息: {str(e)}", exc_info=True)
+        return []

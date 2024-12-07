@@ -3,6 +3,7 @@ import pytest
 from apscheduler.schedulers.background import BackgroundScheduler
 from config.configBase import Config
 from utils.baseFunction import delete_old_screenshots, delete_old_logs, delete_old_reports  # 导入删除报告的函数
+from utils.my_email import send_email
 from utils.logger import setup_logging
 
 
@@ -27,6 +28,10 @@ if __name__ == "__main__":
     scheduler.add_job(delete_old_logs, 'cron', hour=3, minute=0, args=[Config.LOG_PATH])
     # 添加定时任务，设置为每天凌晨4点执行删除过期报告的任务，可根据需求调整触发时间
     scheduler.add_job(delete_old_reports, 'cron', hour=4, minute=0, args=[Config.REPORT_PATH])  # 添加删除报告定时任务
+    # 添加定时任务，每天早上8点发送邮件（可根据实际需求调整时间和触发条件）
+    scheduler.add_job(send_email, 'cron', hour=8, minute=0,
+                      args=["每日测试情况汇报", "这是今日的测试相关情况汇报，请查看附件（也包含以往的报告，以文件名区分）。", Config.EMAIL_TOS,
+                            Config.REPORT_PATH ])
     # 启动定时任务调度器
     scheduler.start()
     while True:
