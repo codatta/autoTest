@@ -353,7 +353,6 @@ def findText(driver, text, timeout=Config.IMPLICIT_WAIT_TIME, fuzzy=True, partia
                 xpath_expr = f"//*[normalize-space(translate(text(), 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')) = '{text.strip().lower()}']"
             elements = driver.find_elements(By.XPATH, xpath_expr)
             logging.info(f"模糊匹配查找元素，找到 {len(elements)} 个符合条件的元素")
-
             # 添加断言，确保模糊匹配至少找到一个元素（可根据实际需求调整断言条件）
             assert elements, f"模糊匹配预期能找到元素，但实际未找到任何元素，查找文本为 {text}"
             return elements

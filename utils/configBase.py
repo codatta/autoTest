@@ -104,5 +104,5 @@ def init():
     # 刷新页面以应用 Cookies 和 Local Storage 数据
     time.sleep(2)
     driver.refresh()
-    time.sleep(7)
+    time.sleep(2)
     return driver
