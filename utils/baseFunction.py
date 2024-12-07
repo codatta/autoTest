@@ -164,7 +164,7 @@ def upload(driver, filepath, xpath='name', xpathname='file', exception=True, *ar
 def screenshot(driver, savePath=None, choice=1, *args, **kwargs):
     try:
         # 获取当前日期和时间
-        current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")  # 格式化为 "YYYY-MM-DD_HH-MM-SS"
+        current_time = datetime.now().strftime("%Y-%m-%d_%H-%M")  # 格式化为 "YYYY-MM-DD_HH-MM-SS"
         
         # 如果没有指定保存路径，则使用默认路径和文件名
         if not savePath:
@@ -224,7 +224,69 @@ def delete_old_screenshots(directory, days=Config.EXPIRATION_TIME_SCREENSHOT, *a
                 logging.info(f"已删除过期截图：{file}")
         except Exception as e:
             logging.error(f"删除文件时发生错误: {file}, 错误信息: {str(e)}")
-            
+
+@log_execution
+def delete_old_logs(directory, days=Config.EXPIRATION_TIME_LOG, *args, **kwargs):
+    """
+    删除指定目录中超过指定天数的日志文件。
+
+    :param directory: 存放日志文件的目录
+    :param days: 超过多少天的文件将被删除
+    """
+    # 检查目录是否存在
+    if not os.path.exists(directory):
+        logging.warning(f"目录不存在: {directory}")
+        return
+    # 获取当前时间
+    current_time = datetime.now()
+    # 计算过期时间
+    expiration_time = current_time - timedelta(days=days)  # 计算过期时间
+
+    # 查找所有日志文件，这里假设日志文件格式为log_YYYY-MM-DD.log，可根据实际调整
+    for file in glob.glob(os.path.join(directory, "log_*.log")):
+        try:
+            # 从文件名中提取日期
+            filename = os.path.basename(file)
+            date_str = filename.split('_')[1].split('.')[0]  # 获取文件名中日期部分并去掉.log后缀
+            file_date = datetime.strptime(date_str, "%Y-%m-%d")  # 将字符串转换为日期对象
+
+            # 如果文件日期早于过期时间，则删除
+            if file_date < expiration_time:
+                os.remove(file)
+                logging.info(f"已删除过期日志：{file}")
+        except Exception as e:
+            logging.error(f"删除文件时发生错误: {file}, 错误信息: {str(e)}")
+
+@log_execution
+def delete_old_reports(directory, days=Config.EXPIRATION_TIME_REPORTS):
+    """
+    删除指定目录中超过指定天数的测试报告文件。
+
+    :param directory: 存放测试报告文件的目录
+    :param days: 超过多少天的文件将被删除
+    """
+    # 检查目录是否存在
+    if not os.path.exists(directory):
+        logging.warning(f"目录不存在: {directory}")
+        return
+    # 获取当前时间
+    current_time = datetime.now()
+    # 计算过期时间
+    expiration_time = current_time - timedelta(days=days)
+
+    for file in glob.glob(os.path.join(directory, "test_report_*.html")):
+        try:
+            # 从文件名中提取日期
+            filename = os.path.basename(file)
+            date_str = filename.split('_')[2].split('.')[0]
+            file_date = datetime.strptime(date_str, "%Y-%m-%d")
+
+            # 如果文件日期早于过期时间，则删除
+            if file_date < expiration_time:
+                os.remove(file)
+                logging.info(f"已删除过期报告：{file}")
+        except Exception as e:
+            logging.error(f"删除文件时发生错误: {file}, 错误信息: {str(e)}")
 @log_execution
 def find_text_on_page(driver, text, timeout=Config.IMPLICIT_WAIT_TIME, exception=True, fuzzy=True, *args, **kwargs):
     """
