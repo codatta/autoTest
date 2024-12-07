@@ -5,7 +5,7 @@ from logging.handlers import TimedRotatingFileHandler
 
 from config.configBase import Config
 
-def setup_logging(log_directory=Config.LOGS, backup_count=2, interval=10):
+def setup_logging(log_directory=Config.LOGS, backup_count=400, interval=30):
     """
     设置日志记录。
 
