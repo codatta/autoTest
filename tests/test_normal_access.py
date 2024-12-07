@@ -13,6 +13,7 @@ def test_normal_access(setup_driver):
     clickbyText(driver,"Copy Link")
     findText(driver,"copied")
     findText(driver,"copy Link")
+    findText(driver,"copy Lsink")
     timeend = datetime.now()
     logging.info(timeend - timestart)
     logging.info("test_normal_access over.................")

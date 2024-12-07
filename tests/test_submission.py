@@ -2,7 +2,7 @@ import logging
 from datetime import datetime
 import time
 from selenium.webdriver.common.by import By
-from utils.baseFunction import slidePage, upload, screenshot,clickbyText
+from utils.baseFunction import slidePage, upload, screenshot, clickbyText, findText
 from config.configBase import  Config
 from selenium.webdriver.common.keys import Keys
 
@@ -103,10 +103,11 @@ def test_submission(setup_driver):
                                  '/html/body/div[1]/div[2]/div/main/div/div[2]/div[1]/form/button')
     button.click()
     logging.info("点击submit")
-    time.sleep(12)
+    time.sleep(8)
+    findText(driver,"successful")
     driver.refresh()
     logging.info("刷新")
-    time.sleep(10)
+    time.sleep(2)
     timeend = datetime.now()
     logging.info(timeend - timestart)
     logging.info("test_submission over.................")

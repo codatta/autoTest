@@ -367,4 +367,4 @@ def findText(driver, text, timeout=Config.IMPLICIT_WAIT_TIME, fuzzy=True, partia
             return [element]
     except Exception as e:
         logging.error(f"查找元素时发生错误，详细信息: {str(e)}", exc_info=True)
-        return []
+        raise e
