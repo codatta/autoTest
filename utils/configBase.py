@@ -54,6 +54,7 @@ def init():
     driver = webdriver.Chrome(service=service, options=chrome_options)
     # 访问网页
     driver.get( 'https://'+ Config.DOMAIN ) # type: ignore
+    time.sleep(2)
     # 设置 Cookies
     for name, value in Config.COOKIES.items():
         driver.add_cookie({'name': name, 'value': value, 'domain': Config.DOMAIN})

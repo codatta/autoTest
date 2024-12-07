@@ -14,6 +14,8 @@ def setup_driver():
         logger.info(".........夹具开始执行.........")
         driver = init()
         yield driver
+        logger.info(".........夹具结束执行，开始清理工作.........")
+        driver.quit()
     except Exception as e:
         print("出现错误重新开始")
         mistakecount = Config.MISTAKECOUNT + 1
