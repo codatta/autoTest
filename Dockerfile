@@ -11,7 +11,7 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 # 复制项目文件到容器内工作目录
-COPY. /app
+COPY . /app
 
 # 安装项目所需的Python依赖包
 RUN pip3 install -r requirements.txt
