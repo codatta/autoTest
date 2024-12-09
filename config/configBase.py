@@ -23,7 +23,7 @@ class Config:
     DOMAIN = 'app.codatta.io'
     REPORT_PATH = os.path.join(os.getcwd(), 'reports')  # 测试报告路径
     CHROME_OPTIONS_ADD_ARGUMENT = True  # 启用无痕模式
-    CHROME_OPTIONS_ADD_ARGUMENT_HEAD = False  # 设置为 False 以启用可视化模式
+    CHROME_OPTIONS_ADD_ARGUMENT_HEAD = True  # 设置为 False 以启用可视化模式
     CHROME_OPTIONS_START_MAXIMIZED = False  # 启动时最大化窗口
     CHROME_OPTIONS_AUTO_OPEN_DEVTOOLS = False  # 启动时自动打开开发者工具
     CHROME_OPTIONS_DISABLE_EXTENSIONS = False  # 禁用扩展
