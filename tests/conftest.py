@@ -21,7 +21,5 @@ def setup_driver():
         Config.MISTAKECOUNT +=1
         print("失败次数", Config.MISTAKECOUNT)
         print(e)
-    finally:
-        if driver is not None:
-            driver.quit()
-            print("退出网页")
+
+

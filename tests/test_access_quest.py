@@ -14,4 +14,4 @@ def test_access_quest(setup_driver):
     findText(driver,"Successfully complete")
     timeend = datetime.now()
     logging.info(timeend - timestart)
-    logging.info("test_normal_access over.................")
+    logging.info("test_access_quest over.................")
