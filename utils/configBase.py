@@ -1,15 +1,16 @@
-
+import os
 import time
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.service import Service
-from config.configBase import  Config
+from config.configBase import Config
 from selenium.webdriver.chrome.options import Options
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
-# 设置请求头
+
+
 def set_custom_headers(driver, token, uid, domain):
     # 通过 DevTools Protocol 设置请求 headers
     driver.execute_cdp_cmd('Network.setUserAgentOverride', {
@@ -30,8 +31,21 @@ def set_custom_headers(driver, token, uid, domain):
         }
     })
 
-# 初始化
+
 def init():
+    # 获取当前项目下的drivers文件夹路径
+    custom_path = os.path.join(os.getcwd(), "drivers")
+    print(custom_path)
+    print(os.makedirs(custom_path, exist_ok=True))
+
+    # 设置环境变量来指定ChromeDriverManager的下载路径（旧版本可能支持这种方式）
+    os.environ['WDM_LOCAL'] = custom_path
+
+    # 直接初始化ChromeDriverManager，不传递path参数（因为不支持）
+    chrome_driver_manager = ChromeDriverManager()
+    driver_path = chrome_driver_manager.install()
+    service = Service(driver_path)
+
     # 配置 ChromeOption
     chrome_options = Options()
     if Config.CHROME_OPTIONS_ADD_ARGUMENT:
@@ -48,16 +62,17 @@ def init():
         chrome_options.add_argument("--disable_gpu")
     if Config.CHROME_OPTIONS_NO_SANDBOX:
         chrome_options.add_argument("--no_sandbox")
-    # 初始化 ChromeDriver
-    # 在mac本地使用
-    service = Service(ChromeDriverManager().install())
+
     driver = webdriver.Chrome(service=service, options=chrome_options)
+
     # 访问网页
-    driver.get( 'https://'+ Config.DOMAIN ) # type: ignore
+    driver.get('https://' + Config.DOMAIN)  # type: ignore
     time.sleep(2)
+
     # 设置 Cookies
     for name, value in Config.COOKIES.items():
         driver.add_cookie({'name': name, 'value': value, 'domain': Config.DOMAIN})
+
     # 设置 Local Storage 数据
     local_storage_data = {
         "adbws_marker": "1726020453740",
@@ -99,8 +114,10 @@ def init():
     # 设置 Local Storage 数据
     for key, value in local_storage_data.items():
         driver.execute_script(f"localStorage.setItem('{key}', '{value}');")
+
     # 设置请求头
     set_custom_headers(driver, Config.TOKEN, Config.UID, Config.DOMAIN)
+
     # 刷新页面以应用 Cookies 和 Local Storage 数据
     time.sleep(2)
     driver.refresh()

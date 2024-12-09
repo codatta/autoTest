@@ -18,8 +18,8 @@ def setup_driver():
         driver.quit()
     except Exception as e:
         print("出现错误重新开始")
-        mistakecount = Config.MISTAKECOUNT + 1
-        print("失败次数", mistakecount)
+        Config.MISTAKECOUNT +=1
+        print("失败次数", Config.MISTAKECOUNT)
         print(e)
     finally:
         if driver is not None:
