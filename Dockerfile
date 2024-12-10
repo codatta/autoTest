@@ -25,4 +25,4 @@ RUN wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.d
 RUN pip install --no-cache-dir -r requirements.txt
 
 # 设置无头模式运行谷歌浏览器
-CMD ["python", "run_tests.py"]  # 替换为您的主脚本
+CMD ["python", "run_tests.py"]
