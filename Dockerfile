@@ -12,9 +12,10 @@ RUN apt-get update && apt-get install -y \
     wget \
     unzip \
     gnupg2 \
+    xvfb\
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
-RUN sudo apt -y install xvfb
+
 
 # 下载并安装谷歌浏览器
 RUN wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && \
