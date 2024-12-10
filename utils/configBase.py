@@ -62,6 +62,8 @@ def init():
             chrome_options.add_argument("--disable_gpu")
         if Config.CHROME_OPTIONS_NO_SANDBOX:
             chrome_options.add_argument("--no_sandbox")
+        chrome_options.add_argument("--disable-dev-shm-usage")  # 解决共享内存不足的问题
+        chrome_options.add_argument("--remote-debugging-port=9222")  # 远程调试端口
 
         driver = webdriver.Chrome(service=service, options=chrome_options)
 
