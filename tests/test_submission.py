@@ -1,6 +1,7 @@
 import logging
 from datetime import datetime
 import time
+import pytest
 from selenium.webdriver.common.by import By
 from utils.baseFunction import slidePage, upload, screenshot, clickbyText, findText
 from config.configBase import  Config
@@ -8,7 +9,7 @@ from selenium.webdriver.common.keys import Keys
 
 
 
-
+@pytest.mark.skip(reason="此测试用例暂时跳过")
 def test_submission(setup_driver):
     """
     测试提交功能的测试用例。

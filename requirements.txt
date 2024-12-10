@@ -5,3 +5,4 @@ setuptools
 apscheduler
 webdriver_manager
 pytest-metadata
+requests

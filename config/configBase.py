@@ -21,6 +21,7 @@ class Config:
     COOKIES = dict(item.split('=', 1) for item in COOKIE_STRING.split('; '))
     UID = '390626534109184'
     DOMAIN = 'app.codatta.io'
+    BASE_URL="https://"+DOMAIN
     REPORT_PATH = os.path.join(os.getcwd(), 'reports')  # 测试报告路径
     CHROME_OPTIONS_ADD_ARGUMENT = True  # 启用无痕模式
     CHROME_OPTIONS_ADD_ARGUMENT_HEAD = True  # 设置为 False 以启用可视化模式
@@ -30,7 +31,7 @@ class Config:
     CHROME_OPTIONS_DISABLE_GPU = True  # 禁用 GPU 硬件加速
     CHROME_OPTIONS_NO_SANDBOX = True  # 解决无沙盒环境问题
 
-    COUNT = 0
+    EXECUTECOUNT = 0
     MISTAKECOUNT = 0
     DICT = {
         "Worldcoin",
