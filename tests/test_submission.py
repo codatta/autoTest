@@ -11,6 +11,7 @@ from selenium.webdriver.common.keys import Keys
 
 @pytest.mark.skip(reason="此测试用例暂时跳过")
 def test_submission(setup_driver):
+    logging.info("这是测试提交submission的功能，提交的manta的数据")
     """
     测试提交功能的测试用例。
 

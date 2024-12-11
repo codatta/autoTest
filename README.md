@@ -53,7 +53,7 @@
 2. 运行测试用例：
 
     ```bash
-    python runtests.txt
+    python run_Ptests.txt
     ```
 
 ## 贡献

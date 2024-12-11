@@ -8,6 +8,7 @@ from utils.logger import log_execution
 
 @log_execution
 def test_categories():
+    logging.info("这是测试访问quest种类的接口")
     url=Config.BASE_URL+"/api/task/categories"
 
     # 请求头信息
