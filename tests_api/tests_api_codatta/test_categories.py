@@ -2,14 +2,14 @@ import logging
 
 import requests
 
-from config.configBase import Config
+from config.config_base import Config
 from utils.logger import log_execution
 
-
 @log_execution
-def test_sub_categories():
-    url=Config.BASE_URL+"/api/task/sub_categories"
-    logging.info("这是测试访问quest二级种类的接口")
+def test_categories():
+    logging.info("这是测试访问quest种类的接口")
+    url=Config.BASE_URL+"/api/task/categories"
+
     # 请求头信息
     headers = {
         "accept": "application/json, text/plain, */*",

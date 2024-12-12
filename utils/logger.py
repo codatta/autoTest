@@ -3,7 +3,8 @@ import os
 from datetime import datetime
 from logging.handlers import TimedRotatingFileHandler
 
-from config.configBase import Config
+
+from config.config_base import Config
 
 def setup_logging(log_directory=Config.LOGS, backup_count=400, interval=30):
     """
@@ -32,34 +33,34 @@ def setup_logging(log_directory=Config.LOGS, backup_count=400, interval=30):
     file_formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
     file_handler.setFormatter(file_formatter)
 
-    # 创建控制台处理器
-    console_handler = logging.StreamHandler()
-    console_formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
-    console_handler.setFormatter(console_formatter)
+    # # 创建控制台处理器
+    # console_handler = logging.StreamHandler()
+    # console_formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+    # console_handler.setFormatter(console_formatter)
 
     # 获取根日志记录器并设置级别
     logger = logging.getLogger()
     logger.setLevel(logging.INFO)  # 设置日志级别
     logger.addHandler(file_handler)  # 添加文件处理器
-    logger.addHandler(console_handler)  # 添加控制台处理器
+    # logger.addHandler(console_handler)  # 添加控制台处理器
 
     return logger
 
 def log_execution(func):
     """
     装饰器，用于记录函数的执行情况。
-
+    只能用于函数，不可用于用例否则会出现错误
     :param func: 被装饰的函数。
     :return: 包装后的函数。
     """
     def wrapper(*args, **kwargs):
-        logger = logging.getLogger()
         try:
-            logger.info(f"............开始执行函数: {func.__name__}，参数: {args}, 关键字参数: {kwargs}............")
+            logging.info(f"............开始执行函数: {func.__name__}，参数: {args}, 关键字参数: {kwargs}............")
             result = func(*args, **kwargs)
-            logger.info(f"............完成执行函数: {func.__name__},返回: {result}............")
+            logging.info(f"............完成执行函数: {func.__name__},返回: {result}............")
             return result
         except Exception as e:
-            logger.error(f"............执行函数时发生错误............")
+            logging.error(f"............执行函数时发生错误............")
             raise  # 重新抛出异常
     return wrapper
+

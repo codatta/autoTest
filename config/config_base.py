@@ -4,7 +4,8 @@ class Config:
     # 邮件相关配置
     EMAIL_FROM = "17628193294@163.com "  # 发件人的邮箱地址，替换为真实有效的邮箱
     EMAIL_PASSWORD = "QNeAPJWGdF9zJY82"  # 发件人邮箱的密码，实际应用中考虑更安全的存储方式，如环境变量等
-    EMAIL_TOS = ["2928446205@qq.com","hao.l@inductive.network","chanyu.lan@inductive.network","paul.p@inductive.network"]  # 收件人的邮箱地址，可设置多个收件人，用逗号分隔开
+    EMAIL_TOS = ["2928446205@qq.com","hao.l@inductive.network"]  # 收件人的邮箱地址，可设置多个收件人，用逗号分隔开
+    # EMAIL_TOS = ["PzOy855z0oGnA@chaintool.ai","2928446205@qq.com"]  # 收件人的邮箱地址，可设置多个收件人，用逗号分隔开
     SMTP_SERVER = "smtp.163.com"  # SMTP服务器地址，根据你的邮箱服务提供商来确定，比如QQ邮箱是'smtp.qq.com'等
     SMTP_PORT =25  # SMTP服务器端口号，常见的使用TLS加密时是587，不同邮箱可能有差异
     EXPIRATION_TIME_REPORTS = 1

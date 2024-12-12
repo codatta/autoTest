@@ -1,8 +1,8 @@
 import time
 import pytest
 from apscheduler.schedulers.background import BackgroundScheduler
-from config.configBase import Config
-from utils.baseFunction import delete_old_screenshots, delete_old_logs, delete_old_reports  # 导入删除报告的函数
+from config.config_base import Config
+from utils.base_function import delete_old_screenshots, delete_old_logs, delete_old_reports  # 导入删除报告的函数
 from utils.my_email import send_email
 from utils.logger import setup_logging
 
@@ -13,7 +13,7 @@ def run_tests():
     timestamp = time.strftime("%Y-%m-%d_%H-%M", time.localtime())
     report_file_path = Config.REPORT_PATH + f"/test_report_{timestamp}.html"
     # 运行所有测试用例，生成HTML报告并使用详细输出，使用动态生成的报告文件名
-    result = pytest.main(["--html=" + report_file_path, "-s","--self-contained-html","--tb=short"])
+    result = pytest.main(["--html=" + report_file_path, "-s","--self-contained-html"])
     return result  # 返回结果以便后续处理
 
 
@@ -30,13 +30,13 @@ if __name__ == "__main__":
     scheduler.add_job(delete_old_reports, 'cron', hour=7, minute=0, args=[Config.REPORT_PATH])  # 添加删除报告定时任务
     # 添加定时任务，每天早上8点发送邮件（可根据实际需求调整时间和触发条件）
     scheduler.add_job(send_email, 'cron', hour=9, minute=0,
-                      args=["每日测试情况汇报", "这是这轮的测试相关情况汇报，请查看。具体用例的执行情况请下载附件查看", Config.EMAIL_TOS,
+                      args=["每日测试情况汇报，这是这轮的测试相关情况汇报，请查看。具体用例的执行情况可以下载附件查看（请用浏览器打开才能看到详情）", "这是这轮的测试相关情况汇报，请查看。具体用例的执行情况请下载附件查看", Config.EMAIL_TOS,
                             Config.REPORT_PATH ])
     # 启动定时任务调度器
     scheduler.start()
     while True:
         exit_code = run_tests()  # 运行测试并获取退出代码
-        # time.sleep(1800)
+        time.sleep(1800)
         if exit_code!= 0:
             print("有测试并未通过")  # 可以根据需要添加更多处理逻辑
         else:

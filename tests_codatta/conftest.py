@@ -1,10 +1,8 @@
 import logging
 import pytest
 
-from config.configBase import Config
-from utils.configBase import init
-
-
+from config.config_base import Config
+from utils.config_base import init
 
 @pytest.fixture(scope='session', autouse=True)
 def setup_driver():

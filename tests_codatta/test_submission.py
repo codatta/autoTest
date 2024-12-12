@@ -3,11 +3,9 @@ from datetime import datetime
 import time
 import pytest
 from selenium.webdriver.common.by import By
-from utils.baseFunction import slidePage, upload, screenshot, clickbyText, findText
-from config.configBase import  Config
+from utils.base_function import slidePage, upload, screenshot, clickbyText, findText
+from config.config_base import  Config
 from selenium.webdriver.common.keys import Keys
-
-
 
 @pytest.mark.skip(reason="此测试用例暂时跳过")
 def test_submission(setup_driver):

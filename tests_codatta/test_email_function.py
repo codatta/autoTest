@@ -2,11 +2,12 @@ import logging
 
 import pytest
 
-from config.configBase import Config
+from config.config_base import Config
+
 from utils.my_email import send_email
 
-# @pytest.mark.skip(reason="此测试用例暂时跳过，只用作测试邮箱功能")
-def test_emailFunction():
+@pytest.mark.skip(reason="此测试用例暂时跳过，只用作测试邮箱功能")
+def test_email_function():
     logging.info("这是测试邮件发送功能")
     # 邮件主题
     subject = "测试报告邮件"

@@ -7,10 +7,12 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.service import Service
-from config.configBase import Config
+from config.config_base import Config
 from selenium.webdriver.chrome.options import Options
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
+
+from utils.logger import log_execution
 
 
 def set_custom_headers(driver, token, uid, domain):
@@ -33,7 +35,7 @@ def set_custom_headers(driver, token, uid, domain):
         }
     })
 
-
+@log_execution
 def init():
     try:
         # 获取当前项目下的drivers文件夹路径

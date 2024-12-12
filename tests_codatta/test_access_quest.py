@@ -2,9 +2,8 @@
 import logging
 import time
 from datetime import datetime
-from config.configBase import Config
-from utils.baseFunction import  clickbyText, findText
-
+from config.config_base import Config
+from utils.base_function import  clickbyText, findText
 
 def test_access_quest(setup_driver):
     logging.info("这是访问界面中的SUBCATE002任务用例")

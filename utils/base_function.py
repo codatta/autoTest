@@ -9,7 +9,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 import re
-from config.configBase import Config
+from config.config_base import Config
 from utils.logger import log_execution
 
 @log_execution

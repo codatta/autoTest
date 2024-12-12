@@ -6,7 +6,7 @@ from email.mime.application import MIMEApplication
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
-from config.configBase import Config
+from config.config_base import Config
 from utils.logger import log_execution
 
 
@@ -42,17 +42,6 @@ def send_email(subject, body, to_emails, report_directory=None, *args, **kwargs)
     #         part['Content-Disposition'] = f'attachment; filename="{os.path.basename(report_path)}"'
     #         msg.attach(part)
 
-    # # 查找并添加assets文件夹中的文件（修正缩进，和上面代码块平级）
-    # assets_directory = os.path.join(report_directory, "assets")
-    # if os.path.exists(assets_directory):
-    #     for root, dirs, files in os.walk(assets_directory):
-    #         for file in files:
-    #             file_path = os.path.join(root, file)
-    #             with open(file_path, "rb") as f:
-    #                 part = MIMEApplication(f.read(), Name=os.path.basename(file_path))
-    #             part['Content-Disposition'] = f'attachment; filename="{os.path.basename(file_path)}"'
-    #             msg.attach(part)
-   # 如果提供了报告目录，则读取第二新的 HTML 报告并将其作为邮件正文
     if report_directory:
         report_paths = glob.glob(os.path.join(report_directory, "*.html"))
         if len(report_paths) >= 2:  # 确保至少有两个报告
