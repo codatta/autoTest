@@ -6,3 +6,5 @@ apscheduler
 webdriver_manager
 pytest-metadata
 requests
+aiohttp
+playwright
