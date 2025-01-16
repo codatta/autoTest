@@ -15,28 +15,34 @@ def run(playwright):
         headless=False,
         args=[
             f"--disable-extensions-except={extension_path}",
-            f"--load-extension={extension_path}",
-            "--start-maximized"
+            f"--load-extension={extension_path}"
         ],
     )
 
+    def handle_metamask_popup(context):
+        for _ in range(10):  # 轮询检查是否有新页面
+            for page in context.pages:
+                if "metamask" in page.title().lower():
+                    print("找到 MetaMask 弹窗！")
+                    page.wait_for_selector('button[data-testid="confirm-footer-button"]')  # 等待确认按钮可用
+
+                    print(page.click('button[data-testid="confirm-footer-button"]'))
+                    return
+            time.sleep(1)  # 等待新窗口打开
+            print("1s")
+        # 在执行授权时调用
+
+
     # 打开一个新页面
-    page = context.new_page()# 设置视口大小（例如 1920x1080）
-    page.set_viewport_size({"width": 1920, "height": 1080})
-    # page.goto("chrome://extensions/")
-    # page.click("button[aria-label='固定 MetaMask']")
-    # 打开 MetaMask 的扩展页面（通常是插件的初始设置页面）
+    page = context.new_page()# 设置视口大小
+
     page.goto("chrome-extension://ibgpmbnfphhegicmgfcceacokbjfmfmg/home.html")  # 替换 <extension-id> 为 MetaMask 的实际扩展 ID
-    # 模拟用户登录（假设用户需要输入密码）
+
+    # 模拟用户登录钱包（假设用户需要输入密码）
     page.fill("input[type='password']", "316105WWll@")  # 替换为实际的密码输入框选择器和密码
-
     page.click("button[data-testid='unlock-submit']")
-    # 访问需要使用 MetaMask 的页面（如 dApp）t
 
-    page.goto("https://www.bitrefill.com/us/zh-Hans/gift-cards/apple-usa/")  # 示例 DApp    # 清除页面的 cookies
-    # 监听弹窗事件
-    # page.on('dialog', lambda dialog: dialog.dismiss())  # 自动接受弹窗
-
+    page.goto("https://www.bitrefill.com/us/zh-Hans/gift-cards/apple-usa/") #购物网站
     context.clear_cookies()
     # 清除 localStorage
     page.evaluate("localStorage.clear()")
@@ -45,50 +51,64 @@ def run(playwright):
     # 重新加载页面以确保状态已清除
     page.reload()
     time.sleep(3)
+
+    #可能有人机验证
     try:
         iframe_selector = 'iframe[id^="cf-chl-widget-"]'  # 匹配动态 ID 的 iframe
         page.wait_for_selector(iframe_selector, timeout=3000)  # 等待 iframe 元素加载
         iframe = page.locator('iframe[id^="cf-chl-widget-"]')
-        print(iframe)
         frame = iframe.content_frame()
-        print("---------------:",iframe)
         print("Iframe loaded successfully.")
         # iframe = page.frame(name="cf-chl-widget-x9cdi")
         # iframe.locator('span:has-text("确认您是真人")').click()
-
     except Exception as e:
         print("Iframe not found, but no error raised:", e)
-
+    #点击价格框
     print(page.locator('button:has(svg.lucide-chevron-down)').click())
-    # 通过 ID 定位并点击该项
-    # page.locator('#downshift-91-item-0').click()
-    # page.locator('#downshift-130-menu ._item_rpopo_55').first.click()
-    # 使用定位器定位并点击该元素
     time.sleep(1)
+
+    #点击2美元
     print(page.locator('li#downshift-0-item-0').click())
-    # 通过文本 "添加到购物车" 定位并点击
     time.sleep(1)
-    # print(page.locator('span:has-text("添加到购物车")').click())
+
     # 点击 "添加到购物车" 按钮
     page.locator('button[data-cy="checkout-button"]').click()
     time.sleep(1)
-    # print(page.locator('span:has-text("付款")').click())
+
     # 定位并点击 '付款' 按钮
     page.locator('a[data-cy="cart-widget-checkout-button"]').click()
-    time.sleep(1)
-    # 登录
+    time.sleep(3)
+
+    # 登录/html/body/div[1]/div/div[2]/div/div/div/div[2]/p/button
+    page.locator('xpath=/html/body/div[6]/div/div/form/div/button[1]').click()
     # 使用 XPath 定位并点击按钮
-    page.locator('xpath=/html/body/div[1]/div/div[2]/div/div/div/div[2]/p/button').click()
-    # 连接钱包
-    button = page.locator('xpath=/html/body/div[6]/div/div/form/div/button[1]')
-    button.click()
-    context.on("page", lambda page: handle_popup(page))
+
+    page.locator('xpath=/html/body/div[8]/div/div/div/div/div/ul/li[1]/button').click()
+    page.locator('xpath=/html/body/div[6]/div/div/form/div/button[1]').click()
+    # 连接钱包'
+    page.pause()
+    time.sleep(3)
     button = page.locator('xpath=/html/body/div[9]/div/div/div/div/div/ul/li[1]/button')
     button.click()
+    handle_metamask_popup(context)
 
-    time.sleep(2)
-    page.locator('xpath=/html/body/div[8]/div/div/div/div/div/div[1]/div[1]/div/input').fill("17628193294@163.com")
-    page.locator('xpath=/html/body/div[9]/div/div/div/div/div/div[2]/button').click()
+    print("已经到了邮箱这里")
+
+    # 确保输入框可见
+    try:
+        page.locator('#email').wait_for(state="visible", timeout=5000)
+    except Exception as e:
+        print(e)
+    # 输入邮箱地址
+    page.fill('#email', '17628193294@163.com')
+
+    # 使用 evaluate 执行 JavaScript 代码点击按钮
+    page.evaluate("""
+          const button = document.querySelector('button:has-text("创建帐号")');
+          if (button) {
+              button.click();
+          }
+      """)
 
     # page.locator('span:has-text("继续付款")').click()
     time.sleep(1)
@@ -102,31 +122,6 @@ def run(playwright):
     # 关闭浏览器上下文
     context.close()
 
-
-def handle_popup(page):
-    # 当新页面或弹窗打开时，这个方法会被调用
-    print(f"New popup opened: {page.url}")
-
-    # 在新弹窗页面上等待并点击按钮
-    page.wait_for_selector('button[data-testid="confirm-footer-button"]')  # 等待确认按钮可用
-
-    page.click('button[data-testid="confirm-footer-button"]')  # 点击确认按钮
-
-def swipe_with_mouse(page):
-    # 获取屏幕大小
-    viewport_size = page.viewport_size
-
-    # 滑动起点和终点坐标
-    start_x = viewport_size['width'] // 2
-    start_y = viewport_size['height'] // 2
-    end_x = start_x
-    end_y = start_y - 600
-
-    # 模拟鼠标拖动
-    page.mouse.move(start_x, start_y)
-    page.mouse.down()  # 按下鼠标
-    page.mouse.move(end_x, end_y, steps=10)  # 移动到目标点
-    page.mouse.up()  # 松开鼠标
 
 
 def check_and_click(page, button_selector):
